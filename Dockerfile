@@ -33,6 +33,9 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/prisma ./prisma
 
+# Fix permissions for node_modules to allow Prisma generation
+RUN chown -R node:node /app/node_modules
+
 # Expose port
 EXPOSE 3000
 

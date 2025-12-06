@@ -1,98 +1,258 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Rate Limit Management System
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A robust rate limiting system built with NestJS that manages API request quotas based on user subscription tiers. This system enforces hourly and daily rate limits for different subscription levels (FREE, STANDARD, PREMIUM) to ensure fair usage and prevent API abuse.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+- **Subscription-based Rate Limiting**: Different rate limits for FREE, STANDARD, and PREMIUM tiers
+- **Hourly and Daily Quotas**: Tracks requests per hour and per day
+- **PostgreSQL Database**: Uses Prisma ORM for reliable data persistence
+- **Docker Support**: Fully containerized with Docker Compose for easy deployment
+- **RESTful API**: Clean API endpoints for user and news management
+- **Automatic Counter Reset**: Automatically resets counters when time expire
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Subscription Tiers & Rate Limits
 
-## Project setup
+| Tier     | Hourly Limit   | Daily Limit      |
+| -------- | -------------- | ---------------- |
+| FREE     | 100 requests   | 1,000 requests   |
+| STANDARD | 500 requests   | 10,000 requests  |
+| PREMIUM  | 2,000 requests | 100,000 requests |
 
-```bash
-$ yarn install
-```
+## Prerequisites
 
-## Compile and run the project
+Before you begin, ensure you have the following installed:
 
-```bash
-# development
-$ yarn run start
+- **Node.js** (v20 or higher)
+- **Yarn** package manager
+- **Docker** and **Docker Compose** (for Docker setup)
+- **PostgreSQL** (if running locally without Docker)
 
-# watch mode
-$ yarn run start:dev
+## Installation & Setup
 
-# production mode
-$ yarn run start:prod
-```
+### Option 1: Using Docker (Recommended)
 
-## Run tests
+This is the easiest way to get started. Docker will handle all dependencies including the database.
+
+#### Step 1: Clone the repository
 
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+git clone <repository-url>
+cd rate_limit_management_system
 ```
 
-## Deployment
+#### Step 2: Configure environment variables
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Create a `.env` file in the root directory:
 
 ```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
+cp .env.example .env
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Edit the `.env` file with your desired configuration:
 
-## Resources
+```env
+# Database Configuration
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_NAME=rate_limit_db
+DB_PORT=5432
 
-Check out a few resources that may come in handy when working with NestJS:
+# Application Configuration
+APP_PORT=3000
+NODE_ENV=development
+PORT=3000
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# Database URL (used by Prisma)
+DATABASE_URL=postgresql://postgres:postgres@postgres:5432/rate_limit_db?connection_limit=20&pool_timeout=10&connect_timeout=5
+```
 
-## Support
+#### Step 3: Build and start containers
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+# Build and start all services (database + application)
+docker-compose up -d
 
-## Stay in touch
+# View logs
+docker-compose logs -f
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Stop all services
+docker-compose down
+
+# Stop and remove volumes (clean slate)
+docker-compose down -v
+```
+
+#### Step 4: Run database migrations
+
+```bash
+# Run migrations inside the app container
+docker-compose exec app yarn prisma:migrate
+
+# Or if you prefer to run it manually
+docker-compose exec app npx prisma migrate dev
+```
+
+#### Step 5: Verify the setup
+
+The application should now be running at `http://localhost:3000`
+
+Check the health of services:
+
+```bash
+# Check if containers are running
+docker-compose ps
+
+# Check application logs
+docker-compose logs app
+
+# Check database logs
+docker-compose logs postgres
+```
+
+### Option 2: Local Development Setup
+
+If you prefer to run the application locally without Docker:
+
+#### Step 1: Install dependencies
+
+```bash
+yarn install
+```
+
+#### Step 2: Set up PostgreSQL database
+
+Make sure PostgreSQL is running on your machine. Create a database:
+
+```bash
+createdb rate_limit_db
+```
+
+Or using PostgreSQL CLI:
+
+```sql
+CREATE DATABASE rate_limit_db;
+```
+
+#### Step 3: Configure environment variables
+
+Create a `.env` file:
+
+```env
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/rate_limit_db?connection_limit=20&pool_timeout=10&connect_timeout=5
+PORT=3000
+NODE_ENV=development
+```
+
+#### Step 4: Generate Prisma Client
+
+```bash
+yarn prisma:generate
+```
+
+#### Step 5: Run database migrations
+
+```bash
+yarn prisma:migrate
+```
+
+#### Step 6: Start the application
+
+```bash
+# Development mode (with hot reload)
+yarn start:dev
+
+# Production mode
+yarn build
+yarn start:prod
+```
+
+## API Endpoints
+
+The API is available at `http://localhost:3000/api/v1`
+
+### User Management
+
+#### Create User
+
+```http
+POST /api/v1/users
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "subscriptionTier": "FREE" | "STANDARD" | "PREMIUM"
+}
+```
+
+#### Get User Quota
+
+```http
+GET /api/v1/users/:id
+```
+
+### News Endpoint (Rate Limited)
+
+#### Get Latest News
+
+```http
+GET /api/v1/news
+Headers:
+  x-user-id: <user-id>
+```
+
+**Note**: This endpoint is protected by rate limiting. You must include the `x-user-id` header with a valid user ID.
+After exceeding the limit, you'll receive a `429 Too Many Requests` response.
+
+## Development
+
+### Available Scripts
+
+```bash
+# Development
+yarn start:dev          # Start in watch mode
+yarn start:debug        # Start in debug mode
+
+# Production
+yarn build              # Build the application
+yarn start:prod         # Start in production mode
+
+# Database
+yarn prisma:generate    # Generate Prisma Client
+yarn prisma:migrate     # Run migrations
+yarn prisma:studio      # Open Prisma Studio (database GUI)
+
+# Testing
+yarn test               # Run unit tests
+yarn test:e2e           # Run end-to-end tests
+yarn test:cov           # Run tests with coverage
+
+# Code Quality
+yarn lint               # Run ESLint
+yarn format             # Format code with Prettier
+```
+
+### Project Structure
+
+```
+rate_limit_management_system/
+├── src/
+│   ├── common/              # Shared constants and utilities
+│   ├── modules/
+│   │   ├── config/          # Configuration module
+│   │   ├── news/            # News module (rate-limited)
+│   │   ├── prisma/          # Prisma service
+│   │   ├── rate-limit/      # Rate limiting logic
+│   │   └── user/            # User management
+│   ├── app.module.ts        # Root module
+│   └── main.ts              # Application entry point
+├── prisma/
+│   └── schema.prisma        # Database schema
+├── docker-compose.yml       # Docker Compose configuration
+├── Dockerfile              # Docker image definition
+└── package.json            # Dependencies and scripts
+```
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is private and unlicensed.

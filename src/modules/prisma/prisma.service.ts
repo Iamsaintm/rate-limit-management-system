@@ -13,7 +13,17 @@ export class PrismaService
       throw new Error('DATABASE_URL is not set in environment variables');
     }
 
-    super();
+    super({
+      datasources: {
+        db: {
+          url: databaseUrl,
+        },
+      },
+      log:
+        process.env.NODE_ENV === 'development'
+          ? ['query', 'error', 'warn']
+          : ['error'],
+    });
   }
 
   async onModuleInit() {

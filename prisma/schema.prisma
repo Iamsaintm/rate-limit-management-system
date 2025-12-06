@@ -13,31 +13,26 @@ enum SubscriptionTier {
   PREMIUM
 }
 
-enum RequestType {
-  HOURLY
-  DAILY
-}
-
 model User {
-  id              String           @id @default(uuid())
-  email           String           @unique
-  subscriptionTier SubscriptionTier @default(FREE)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  requestLogs     RequestLog[]
+  id                String             @id @default(uuid())
+  email             String             @unique
+  subscriptionTier  SubscriptionTier   @default(FREE)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  rateLimitCounter  RateLimitCounter?
 
   @@map("users")
 }
 
-model RequestLog {
-  id        String      @id @default(uuid())
-  userId    String
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  timestamp DateTime    @default(now())
-  type      RequestType
-  createdAt DateTime    @default(now())
+model RateLimitCounter {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hourlyCount       Int      @default(0)
+  hourlyStart       DateTime @default(now())
+  dailyCount        Int      @default(0)
+  dailyStart        DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
-  @@index([userId, type, timestamp])
-  @@index([userId, timestamp])
-  @@map("request_logs")
+  @@map("rate_limit_counters")
 }
